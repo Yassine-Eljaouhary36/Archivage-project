@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: archivage-app
+    working_dir: /var/www
+    volumes:
+      - .:/var/www
+    networks:
+      - archivage-network
+    depends_on:
+      - db # only db needs to be waited on
+
+  db:
+    image: mysql:8.0
+    container_name: mysql-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: archivage
+      MYSQL_USER: user
+      MYSQL_PASSWORD: userpassword
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - archivage-network
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx-server
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - .:/var/www
+    networks:
+      - archivage-network
+
+networks:
+  archivage-network:
+    driver: bridge
+
+volumes:
+  db-data:
