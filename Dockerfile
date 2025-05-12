@@ -20,3 +20,6 @@ COPY . /var/www
 
 # Install Composer (PHP dependency manager)
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+RUN chown -R www-data:www-data /var/www/archive-app/storage /var/www/archive-app/bootstrap/cache \
+    && chmod -R 775 /var/www/archive-app/storage /var/www/archive-app/bootstrap/cache
